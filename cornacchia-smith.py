@@ -2,7 +2,7 @@
 The modified Connacchia-Smith Algorithm. Implemented through Algorithm 2.3.13.
 '''
 from jacobi import jacobi
-import random
+import math
 from nzmath.arith1 import modsqrt, floorsqrt, issquare
 
 def solve(p, D):

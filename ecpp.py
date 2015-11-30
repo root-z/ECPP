@@ -23,12 +23,12 @@ def findDiscriminant(p):
     d = 0
     #compute the odd part
     dFound = False
-    while(!dFound):
+    while (not dFound):
         '''find the next fundamental discriminant'''
         d -= 1
         odd = oddPart(-d)
         #check if the odd part is square free.
-        if (!squareFreeOdd(odd)):
+        if (not squareFreeOdd(odd)):
             continue
         if not ((-d) % 16 in {3, 4, 7, 8, 11, 15}):
             continue
