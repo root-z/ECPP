@@ -1,0 +1,10 @@
+'''
+The modified Connacchia-Smith Algorithm. Implemented through Algorithm 2.3.13.
+'''
+import ecpp
+
+def solve(p, D):
+    if not -4 * p < D < 0:
+        raise ValueError("Please check -4p < D < 0.")
+    if p == 2:
+        if (D + 8
