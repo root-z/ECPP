@@ -41,6 +41,9 @@ def dedekind(tau, floatpre):
     qs = mpmath.mpc(1, 0)
     qn = 1
     des = mpmath.mpf(10)**(-floatpre)
+
+    '''I believe this is the sum function listed in the book and website'''
+    # http://mathworld.wolfram.com/DedekindEtaFunction.html
     while abs(qs) > des:
         t = -q*qn*qn*qs
         # t = -q, q^5
