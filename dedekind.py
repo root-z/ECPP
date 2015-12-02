@@ -20,14 +20,16 @@ def dedekind(tau, floatpre):
     p = 1   # What is this for?
     m = 0
     # What the hell is happening in this for loop
-    '''Removing the integer part of the tau.real '''
+    # Might be a way to reduce the number and speed up the algorithm.
+    # So the algorithm might work even without this step.
     while m <= 0.999:
         n = nearest_integer(tau.real)
         if n != 0:
             tau -= n
+            # Removing the integer part of the tau.real
             p *= b**n
         m = tau.real*tau.real + tau.imag*tau.imag
-        # keeping the absolute of tau less than 1
+        # Keep m >= 1?
         if m <= 0.999:
             ro = mpmath.sqrt(mpmath.power(tau, -1)*1j)
             # ro = sqrt((tau^-1)*i)
@@ -63,4 +65,4 @@ def dedekind(tau, floatpre):
     # Compare to wolfram alpha the result is correct.
 
 if __name__=='__main__':
-    print dedekind(1+ + 2j, 8)
+    print dedekind(1+ 0.5j, 8)
