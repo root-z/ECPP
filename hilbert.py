@@ -1,16 +1,17 @@
 '''
 Compute Hilbert Class Polynomials
 '''
-
-from nzmath.arith1 import floorsqrt
-import math
+from mpmath import floor, sqrt, power
+from dedekind import dedekind
+import mpmath
+import nzmath.ecpp
 
 
 def solve(d):
     # initialize
-    t = 1
+    t = [1]
     b = d % 2
-    r = floorsqrt((-d)/3)
+    r = floor(sqrt((-d)/3))
     h = 0
     red = {}
 
@@ -25,7 +26,24 @@ def solve(d):
             if b > a:
                 continue
             # optional polynomial setup
-            tau = (-b + 1j * math.sqrt(-d)) / (2*a)
+            tau = (-b + 1j * sqrt(-d)) / (2*a)
+            f = power(dedekind(2 * tau) / dedekind(tau), 24)
+            j = power((256 * f + 1), 3) / f
+
+            if b==a or c==a or b==0:
+                t = t
 
 def delta(q):
     return q
+
+def polynomialMul(p1, p2):
+    if len(p1)==0 or len(p2)==0:
+        raise ValueError('Polynomial Array empty.')
+
+
+
+if __name__ == '__main__':
+    print(mpmath.sqrt(1 + 1j))
+    print(mpmath.sqrt(211))
+    print power(1j, 2)
+    print nzmath.ecpp.hilbert(-15)
