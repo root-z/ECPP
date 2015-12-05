@@ -31,7 +31,7 @@ def solve(d):
             j = power((256 * f + 1), 3) / f
 
             if b==a or c==a or b==0:
-                t = t
+                t = polynomialMul(t, [-1j, 1])
 
 def delta(q):
     return q
@@ -39,11 +39,17 @@ def delta(q):
 def polynomialMul(p1, p2):
     if len(p1)==0 or len(p2)==0:
         raise ValueError('Polynomial Array empty.')
-
-
+    m = [0]* (len(p1) + len(p2) -1)
+    for i in range(0, len(p1)):
+        for j in range(0, len(p2)):
+            m[i+j] += p1[i] * p2[j]
+    return m
 
 if __name__ == '__main__':
+    '''
     print(mpmath.sqrt(1 + 1j))
     print(mpmath.sqrt(211))
     print power(1j, 2)
     print nzmath.ecpp.hilbert(-15)
+    '''
+    print polynomialMul([0,1], [-1j, 1])
