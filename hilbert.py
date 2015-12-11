@@ -11,7 +11,7 @@ def solve(d):
     # initialize
     t = [1]
     b = d % 2
-    r = floor(sqrt((-d)/3))-1
+    r = floor(sqrt((-d)/3))
     h = 0
     red = set()
 
@@ -49,7 +49,7 @@ def solve(d):
                 h += 2
                 red.add((a, b, c))
                 red.add((a, -b, c))
-        b += 1
+        b += 2
 
     return h, [floor(mpmath.re(p) + 0.5) for p in t], red
 
@@ -77,4 +77,4 @@ if __name__ == '__main__':
     print power(1j, 2)
     print nzmath.ecpp.hilbert(-15)
     '''
-    print solve(-4)
+    print solve(-23)
