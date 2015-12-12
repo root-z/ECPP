@@ -7,7 +7,15 @@ import mpmath
 import nzmath.quad as quad
 
 
-def solve(d):
+def hilbert(d):
+    '''
+
+    Args:
+        d:
+
+    Returns:
+
+    '''
     # initialize
     t = [1]
     b = d % 2
@@ -20,8 +28,6 @@ def solve(d):
     harmonic_sum = sum(1/mpmath.mpf(form[0]) for form in reduced_forms)
     floatpre = floor(mpmath.pi*mpmath.sqrt(-d)*harmonic_sum / mpmath.log(10)+0.5) + 10
     mpmath.mp.dps = floatpre
-
-
 
     # outer loop
     while b <= r:
@@ -62,7 +68,7 @@ def polynomial_mul(p1, p2):
     '''
     Used to Compute T = T * (X-j)
     '''
-    if len(p1)==0 or len(p2)==0:
+    if len(p1) == 0 or len(p2) == 0:
         raise ValueError('Polynomial Array empty.')
     m = [0]* (len(p1) + len(p2) -1)
     for i in range(0, len(p1)):
@@ -77,4 +83,4 @@ if __name__ == '__main__':
     print power(1j, 2)
     print nzmath.ecpp.hilbert(-15)
     '''
-    print solve(-23)
+    print hilbert(-23)

@@ -4,40 +4,51 @@ The modified Connacchia-Smith Algorithm. Implemented through Algorithm 2.3.13.
 from jacobi import jacobi
 import math
 from nzmath.arith1 import modsqrt, floorsqrt, issquare
+from nzmath.ecpp import cornacchiamodify
 
-def cornacchia_smith(p, D):
-    #check input
-    if not -4 * p < D < 0:
+def cornacchia_smith(p, d):
+    '''
+
+    Args:
+        p:
+        d:
+
+    Returns:
+        a, b such that a^2 + b^2 |D| = 4p
+
+    '''
+    # check input
+    if not -4 * p < d < 0:
         raise ValueError(" -4p < D < 0 not true.")
-    elif not (D % 4 in {0,1}):
+    elif not (d % 4 in {0, 1}):
         raise ValueError(" D = 0, 1 (mod 4) not true.")
         
-    #case where p=2
+    # case where p=2
     if p == 2:
-        r = sqrt(D+8)
+        r = sqrt(d + 8)
         if r != -1:
-            return (r, 1)
+            return r, 1
         else:
             return None
-    #test for solvability
-    if jacobi(D % p, p) < 1:
+    # test for solvability
+    if jacobi(d % p, p) < 1:
         return None
     
-    x = modsqrt(D, p)
-    if ((x % 2) != (D % 2)):
+    x = modsqrt(d, p)
+    if (x % 2) != (d % 2):
         x = p - x
-    #euclid chain
+    # euclid chain
     a, b = (2*p, x)
     c = floorsqrt(4 * p)
     while b > c:
         a, b = b, a % b 
     
-    t = 4 * p - D
-    if t % (-D) ==  0:
+    t = 4 * p - b*b
+    if t % (-d) != 0:
         return None
-    if not issquare(t/(-D)):
+    if not issquare(t/(-d)):
         return None
-    return (b, int(math.sqrt(t/(-D))))
+    return b, int(math.sqrt(t / -d))
     
 
 def sqrt(x):
@@ -70,5 +81,6 @@ unfinished
 '''
 
 
-if __name__=='__main__':
-    print(cornacchia_smith(103, -15))
+if __name__ == '__main__':
+    print cornacchia_smith(7, -3)
+    print cornacchiamodify(-3, 7)
