@@ -5,7 +5,7 @@ from jacobi import jacobi
 import math
 from nzmath.arith1 import modsqrt, floorsqrt, issquare
 
-def solve(p, D):
+def cornacchia_smith(p, D):
     #check input
     if not -4 * p < D < 0:
         raise ValueError(" -4p < D < 0 not true.")
@@ -71,4 +71,4 @@ unfinished
 
 
 if __name__=='__main__':
-    print(solve(103 , -15))
+    print(cornacchia_smith(103, -15))
