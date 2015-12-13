@@ -28,7 +28,10 @@ def atkin_morain(n):
                 break
         # if no proper m can be found. Go back to choose_discriminant()
         d, ms = choose_discriminant(n, d)
-    
+    params = curve_parameters(d, n)
+
+    # Test to see if the order of the curve is really m
+
 
 def factor_orders(m, n):
     '''
@@ -96,6 +99,50 @@ def choose_discriminant(n, start=0):
 
     return d, ms
 
+def curve_parameters(d, p):
+    '''
+    Modified Algorithm 7.5.9 for the use of ecpp
+    Args:
+        d: discriminant
+        p: number for prime proving
+
+    Returns:
+        a list of (a, b) parameters for
+    '''
+    g = gen_QNR(p)
+    u, v = cornacchia_smith(p, d)
+    # go without the check for result of cornacchia because it's done by previous methods.
+    if jacobi(d, p) != 1:
+        raise ValueError('jacobi(d, p) not equal to 1.')
+
+        # check for -d = 3 or 4
+    # Choose one possible output
+    # Look at param_gen for comparison.
+    answer = []
+
+    if d == -3:
+        x = -1
+        for i in range(0, 6):
+            answer.append((0, x))
+            x = (x * g) % p
+        return answer
+
+    if d == -4:
+        x = -1
+        for i in range(0, 4):
+            answer.append((x, 0))
+            x = (x * g) % p
+        return answer
+
+    # otherwise compute the hilbert polynomial
+    _, t, _ = hilbert(d)
+    s = [i % p for i in t]
+    j = equation.root_Fp(s, p) # Find a root for s in Fp. Algorithm 2.3.10
+    c = j * inverse(j - 1728, p) % p
+    r = -3 * c % p
+    s = 2 * c % p
+
+    return [(r, s), (r * g * g % p, s * (g**3) % p)]
 
 def generate_curve(p):
     '''
