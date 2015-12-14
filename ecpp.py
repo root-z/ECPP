@@ -11,6 +11,7 @@ from nzmath.arith1 import inverse
 from nzmath import factor
 from nzmath import prime
 import mpmath
+from elliptic_curve import EllipticCurve
 from nzmath import ecpp
 
 small_primes = factor.mpqs.eratosthenes(10**6)  # for small_primes
@@ -31,10 +32,30 @@ def atkin_morain(n):
     params = curve_parameters(d, n)
 
     # Test to see if the order of the curve is really m
+    a, b = params.pop()
+    ec = EllipticCurve(a, b, n)
+
+
+def test_order(ec, m):
+    """
+
+    Args:
+        ec: elliptic curve
+        m: possible order
+
+    Returns:
+        True if m is likely the order of ec.
+
+    """
+    for i in range(0, 3):
+        point = ec.random_point()
+        if ec.mul(m, point) != 0:
+            return False
+    return True
 
 
 def factor_orders(m, n):
-    '''
+    """
     m = kq
     Args:
         m: for factorizations
@@ -42,7 +63,7 @@ def factor_orders(m, n):
 
     Returns:
 
-    '''
+    """
     k = 1
     q = m
     bound = (mpmath.power(n, 1/4.0) + 1) ** 2
