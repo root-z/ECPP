@@ -1,4 +1,8 @@
 from nzmath.arith1 import modsqrt
+from nzmath import arith1
+import random
+from jacobi import jacobi
+
 
 class EllipticCurve(object):
     '''
@@ -16,6 +20,7 @@ class EllipticCurve(object):
         self.b = b
         self.p = p
 
+    '''
     def y(self, x):
         """
         Given x compute y such that (x, y) is on E(Fp)
@@ -27,6 +32,7 @@ class EllipticCurve(object):
         """
         y_square = (x ** 3 + self.a * x + self.b) % self.p
         return modsqrt(y_square, self.p)
+    '''
 
     def add(self, P, Q):
         """
@@ -78,3 +84,27 @@ class EllipticCurve(object):
         Returns:
 
         """
+        if k < 0:
+            P = self.sub(0, P)
+
+        l = arith1.expand(k, 2)
+        Q = 0
+        for j in range(len(l) -1, -1, -1):
+            Q = self.add(Q, Q)
+            if l[j] == 1:
+                Q = self.add(Q, P)
+        return Q
+
+    def random_point(self):
+        """
+
+        Returns:
+            A random point on the curve.
+        """
+        x = random.randrange(self.p)
+        y_square = x**3 + self.a * x + self.b
+        while jacobi(y, self.p) == -1:
+            x = random.randrange(self.p)
+            y_square = x**3 + self.a * x + self.b
+        y = modsqrt(y_square, self.p)
+        return x, y
