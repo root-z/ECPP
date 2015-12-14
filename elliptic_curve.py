@@ -17,18 +17,27 @@ class EllipticCurve(object):
         self.p = p
 
     def y(self, x):
-        '''
+        """
         Given x compute y such that (x, y) is on E(Fp)
         Args:
             x: x-coordinate
 
         Returns:
             y-coordinate
-        '''
+        """
         y_square = (x ** 3 + self.a * x + self.b) % self.p
         return modsqrt(y_square, self.p)
 
     def add(self, P, Q):
+        """
+        Elliptic Curve Addition
+        Args:
+            P: Point on curve
+            Q: Point on curve
+
+        Returns:
+            R = P + Q
+        """
         if P == 0:
             return Q
         if Q == 0:
@@ -44,5 +53,28 @@ class EllipticCurve(object):
         y = l * (P[0] - x) - P[1]
         return x, y
 
+    def sub(self, P, Q):
+        """
 
+        Args:
+            P:
+            Q:
 
+        Returns:
+            R = P - Q
+        """
+        if Q == 0:
+            return P
+        negative_Q = (Q[0], -Q[1])
+        return self.add(P, negative_Q)
+
+    def mul(self, k, P):
+        """
+
+        Args:
+            k:
+            P:
+
+        Returns:
+
+        """
