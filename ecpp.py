@@ -7,7 +7,7 @@ from jacobi import jacobi
 from cornacchia_smith import cornacchia_smith
 from hilbert import hilbert
 from nzmath import equation
-from nzmath.arith1 import inverse
+from nzmath.arith1 import inverse, modsqrt
 from nzmath import factor
 from nzmath import prime
 import mpmath
@@ -19,21 +19,63 @@ small_primes = factor.mpqs.eratosthenes(10**6)  # for small_primes
 
 def atkin_morain(n):
     d, ms = choose_discriminant(n)
-    m_found = False
-    while not m_found:
+    '''
+    choose_discriminant needs to stop at some point.
+    Possibly generate a limited list of discriminants.
+    '''
+    m_found = None
+    while m_found is None:
         for m in ms:
             factors = factor_orders(m, n)
             if factors is not None:
                 k, q = factors
-                m_found = True
+                m_found = m
                 break
         # if no proper m can be found. Go back to choose_discriminant()
         d, ms = choose_discriminant(n, d)
+    '''
+    If this step fails need to return false.
+    '''
     params = curve_parameters(d, n)
 
     # Test to see if the order of the curve is really m
     a, b = params.pop()
     ec = EllipticCurve(a, b, n)
+
+    while not test_order(ec, m_found):
+        a, b = params.pop()
+        ec = EllipticCurve(a, b, n)
+
+    try:
+        P = choose_point(ec)
+    except ValueError:
+        return False
+
+
+
+
+def choose_point(ec):
+    """
+    Choose a random point on EC.
+    Adapted from random_point function. With the additional check for modsqrt.
+    Args:
+        ec: an elliptic curve by the equation y^2 = x^3 + a * x + b
+
+    Returns:
+        a valid point on the curve.
+    """
+    x = random.randrange(ec.p)
+    y_square = (x**3 + ec.a * x + ec.b) % ec.p
+    while jacobi(y, ec.p) == -1:
+        x = random.randrange(ec.p)
+        y_square = (x**3 + ec.a * x + ec.b) % ec.p
+    y = modsqrt(y_square, ec.p)
+
+    if (y**2 % ec.p) != y_square:
+        raise ValueError("Error computing square root.")
+
+    return x, y
+
 
 
 def test_order(ec, m):
