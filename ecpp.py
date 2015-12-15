@@ -7,24 +7,29 @@ from jacobi import jacobi
 from cornacchia_smith import cornacchia_smith
 from hilbert import hilbert
 from nzmath import equation
-from nzmath.arith1 import inverse, modsqrt
+from nzmath.arith1 import inverse, modsqrt, issquare
 from nzmath import factor
 from nzmath import prime
 import mpmath
 from elliptic_curve import EllipticCurve
-from nzmath import ecpp
+import nzmath.ecpp
+from nzmath.ecpp import Elliptic
+
+from nzmath import intresidue
 
 small_primes = factor.mpqs.eratosthenes(10**6)  # for small_primes
 
 
 def atkin_morain(n):
-    d, ms = choose_discriminant(n)
+    # d, ms = choose_discriminant(n)
     '''
     choose_discriminant needs to stop at some point.
     Possibly generate a limited list of discriminants.
     '''
+    d = 0
     m_found = None
     while m_found is None:
+        d, ms = choose_discriminant(n, d)
         for m in ms:
             factors = factor_orders(m, n)
             if factors is not None:
@@ -32,7 +37,6 @@ def atkin_morain(n):
                 m_found = m
                 break
         # if no proper m can be found. Go back to choose_discriminant()
-        d, ms = choose_discriminant(n, d)
     '''
     If this step fails need to return false.
     '''
@@ -46,11 +50,24 @@ def atkin_morain(n):
         a, b = params.pop()
         ec = EllipticCurve(a, b, n)
 
-    try:
-        P = choose_point(ec)
-    except ValueError:
-        return False
+    # operate on point
+    while True:
+        try:
+            P = choose_point(ec)
+        except ValueError:
+            return False
+        U = ec.mul(k, P) # U = [m/q]P
+        if U != 0:
+            break
 
+    V = ec.mul(q, U)
+    if V != 0:
+        return False
+    else:
+        if q > 10**6:
+            return atkin_morain(q)
+        else:
+            return prime.trialDivision(q)
 
 
 
@@ -66,7 +83,7 @@ def choose_point(ec):
     """
     x = random.randrange(ec.p)
     y_square = (x**3 + ec.a * x + ec.b) % ec.p
-    while jacobi(y, ec.p) == -1:
+    while jacobi(y_square, ec.p) == -1:
         x = random.randrange(ec.p)
         y_square = (x**3 + ec.a * x + ec.b) % ec.p
     y = modsqrt(y_square, ec.p)
@@ -75,7 +92,6 @@ def choose_point(ec):
         raise ValueError("Error computing square root.")
 
     return x, y
-
 
 
 def test_order(ec, m):
@@ -90,8 +106,11 @@ def test_order(ec, m):
 
     """
     for i in range(0, 3):
-        point = ec.random_point()
-        if ec.mul(m, point) != 0:
+        point = choose_point(ec)
+        mp = ec.mul(m, point)
+        #if ec.mul(m, point) != 0:
+        # print mp
+        if mp != 0:
             return False
     return True
 
@@ -199,7 +218,8 @@ def curve_parameters(d, p):
 
     # otherwise compute the hilbert polynomial
     _, t, _ = hilbert(d)
-    s = [i % p for i in t]
+    s = [int(i % p) for i in t]
+    s.append(0)
     j = equation.root_Fp(s, p) # Find a root for s in Fp. Algorithm 2.3.10
     c = j * inverse(j - 1728, p) % p
     r = -3 * c % p
@@ -267,7 +287,7 @@ def gen_discriminant(start=0):
         d -= 1
         odd = odd_part(-d)
         # check if the odd part is square free.
-        if not square_free_odd(odd):
+        if issquare(odd) not in {0, 1}:
             continue
         if not ((-d) % 16 in {3, 4, 7, 8, 11, 15}):
             continue
@@ -276,15 +296,16 @@ def gen_discriminant(start=0):
 
 
 def odd_part(n):
-    #compute the odd part of a number
-    oddPart = n
-    while (oddPart % 2 == 0):
-        oddPart = oddPart//2
-    return oddPart
+    # compute the odd part of a number
+    odd = n
+    while odd % 2 == 0:
+        # odd = odd // 2
+        odd //= 2
+    return odd
 
 
 def square_free_odd(n):
-    #check if the odd part is square free. No efficient algorithm is known.
+    # check if the odd part is square free. No efficient algorithm is known.
     x = 1
     x_square = x * x
     while x_square <= n:
@@ -310,9 +331,22 @@ def gen_QNR(p):
     return g
     
 if __name__=='__main__':
-    print(gen_QNR(17))
+    # print(gen_QNR(17))
 
-    #primes = factor.mpqs.eratosthenes(10 ** 6)
-    #print primes[0:100]
-    print factor_orders(49, 1)
+    # primes = factor.mpqs.eratosthenes(10 ** 6)
+    # print primes[0:100]
+    '''
+    for param in nzmath.ecpp._generate_params_for_general_disc(-59, 15485867, gen_QNR(15485867)):
+        print param
+    P = (6035688, 1172853)
+    n = 15485867
+    ec = EllipticCurve(11851425, 7584917, 15485867)
+    print ec.mul(15480882, (168979, 14386173))
 
+    ec2 = Elliptic((11851425, 7584917), 15485867)
+    print ec2.mul(15480882, (intresidue.IntegerResidueClass(168979, n), intresidue.IntegerResidueClass(14386173,n)))
+   '''
+    print nzmath.ecpp.ecpp(15485867)
+    print atkin_morain(15485867)
+
+    # print hilbert(-59)

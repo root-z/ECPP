@@ -24,7 +24,7 @@ def hilbert(d):
     red = set()
 
     h1, reduced_forms = quad.class_group(d)
-    print h1
+    # print h1
     harmonic_sum = sum(1/mpmath.mpf(form[0]) for form in reduced_forms)
     floatpre = floor(mpmath.pi*mpmath.sqrt(-d)*harmonic_sum / mpmath.log(10)+0.5) + 10
     mpmath.mp.dps = floatpre
@@ -57,7 +57,7 @@ def hilbert(d):
                 red.add((a, -b, c))
         b += 2
 
-    return h, [floor(mpmath.re(p) + 0.5) for p in t], red
+    return h, [int(floor(mpmath.re(p) + 0.5)) for p in t], red
 
 
 def delta(q):

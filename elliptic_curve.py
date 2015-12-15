@@ -1,4 +1,4 @@
-from nzmath.arith1 import modsqrt
+from nzmath.arith1 import modsqrt, inverse
 from nzmath import arith1
 import random
 from jacobi import jacobi
@@ -44,19 +44,20 @@ class EllipticCurve(object):
         Returns:
             R = P + Q
         """
+
         if P == 0:
             return Q
         if Q == 0:
             return P
-        if P[0] == Q[0] and P[1] == -Q[1]:
+        if P[0] == Q[0] and P[1] == -Q[1] % self.p:
             return 0
         if P == Q:
-            l = (3 * P[0]**2 + self.a) / (2*P[1])
+            l = (3 * P[0]**2 + self.a) * inverse(2*P[1], self.p) % self.p
         else:
-            l = (P[1] - Q[1]) / (P[0] - Q[0])
+            l = (P[1] - Q[1]) * inverse(P[0] - Q[0], self.p) % self.p
 
-        x = l - P[0] - Q[0]
-        y = l * (P[0] - x) - P[1]
+        x = (l**2 - P[0] - Q[0]) % self.p
+        y = (l * (P[0] - x) - P[1]) % self.p
         return x, y
 
     def sub(self, P, Q):
@@ -86,6 +87,7 @@ class EllipticCurve(object):
         """
         if k < 0:
             P = self.sub(0, P)
+            k = -k
 
         l = arith1.expand(k, 2)
         Q = 0
@@ -103,8 +105,16 @@ class EllipticCurve(object):
         """
         x = random.randrange(self.p)
         y_square = x**3 + self.a * x + self.b
-        while jacobi(y, self.p) == -1:
+        while jacobi(y_square, self.p) == -1:
             x = random.randrange(self.p)
             y_square = x**3 + self.a * x + self.b
         y = modsqrt(y_square, self.p)
-        return x, y
+        return x,
+
+
+def mod_point(P, n):
+    return P[0] % n, P[1] % n
+
+if __name__=='__main__':
+    ec = EllipticCurve(3, 8, 13)
+    print ec.add((9, 7), (1, 8))
