@@ -17,6 +17,7 @@ from nzmath.ecpp import Elliptic
 
 from nzmath import intresidue
 
+
 small_primes = factor.mpqs.eratosthenes(10**6)  # for small_primes
 
 
@@ -29,7 +30,10 @@ def atkin_morain(n):
     d = 0
     m_found = None
     while m_found is None:
-        d, ms = choose_discriminant(n, d)
+        try:
+            d, ms = choose_discriminant(n, d)
+        except ValueError:
+            return False
         for m in ms:
             factors = factor_orders(m, n)
             if factors is not None:
@@ -50,17 +54,18 @@ def atkin_morain(n):
         a, b = params.pop()
         ec = EllipticCurve(a, b, n)
 
+    try:
     # operate on point
-    while True:
-        try:
+        while True:
             P = choose_point(ec)
-        except ValueError:
-            return False
-        U = ec.mul(k, P) # U = [m/q]P
-        if U != 0:
-            break
+            U = ec.mul(k, P) # U = [m/q]P
+            if U != 0:
+                break
+        V = ec.mul(q, U)
+    except (ZeroDivisionError, ValueError):
+        return False
 
-    V = ec.mul(q, U)
+
     if V != 0:
         return False
     else:
@@ -167,6 +172,8 @@ def choose_discriminant(n, start=0):
     d = gen_discriminant(start)
     uv = cornacchia_smith(n, d)
     while jacobi(d, n) != 1 or uv is None:
+        if n % d == 0:
+            raise ValueError("n is not prime.")
         d = gen_discriminant(d)
         uv = cornacchia_smith(n, d)
     u, v = uv
@@ -346,7 +353,9 @@ if __name__=='__main__':
     ec2 = Elliptic((11851425, 7584917), 15485867)
     print ec2.mul(15480882, (intresidue.IntegerResidueClass(168979, n), intresidue.IntegerResidueClass(14386173,n)))
    '''
-    print nzmath.ecpp.ecpp(15485867)
-    print atkin_morain(15485867)
+    n = 838041647
+    print nzmath.ecpp.ecpp(n)
+    print atkin_morain(n)
+
 
     # print hilbert(-59)
