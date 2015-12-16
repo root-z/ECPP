@@ -1,5 +1,7 @@
 import mpmath
 from mpmath import power
+from hilbert import dedekind as dd
+from mpmath import *
 
 def nearest_integer(x):
     """
@@ -124,9 +126,22 @@ def dedekind(tau, floatpre):
 
 if __name__=='__main__':
     floatpre = 8
-    tau = 1 + 2j
-    print dedekind(1 + 2j, 8)
-    print eta(1 + 2j, 8)
-
+    tau = 5 + 2j
+    print dedekind(tau, floatpre)
+    print dd(tau, floatpre)
+    # print eta(1 + 2j, 8)
+    '''
     f = power(dedekind(2 * tau, floatpre) / dedekind(tau, floatpre), 24)
     f2 = power(dedekind(2 * tau, floatpre), 24) / power(dedekind(tau, floatpre), 24)
+
+    #print f
+    #print f2
+    '''
+    q1 = mpmath.exp((pi/12) * tau * 1j)
+    q12 = mpmath.exp((2*pi/24) * tau * 1j)
+    print q1, q12
+    #print 'q1=', q1
+    # q1 = e^(2pi*tau*i/24)
+    q = q1**24
+    q2 = q12 ** 24
+    print q, q2
