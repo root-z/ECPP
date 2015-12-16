@@ -15,7 +15,6 @@ from elliptic_curve import EllipticCurve
 import nzmath.ecpp
 
 
-
 small_primes = factor.mpqs.eratosthenes(10**6)  # for small_primes
 
 
@@ -71,7 +70,6 @@ def atkin_morain(n):
             return atkin_morain(q)
         else:
             return prime.trialDivision(q)
-
 
 
 def choose_point(ec):
@@ -232,6 +230,7 @@ def curve_parameters(d, p):
 
     return [(r, s), (r * g * g % p, s * (g**3) % p)]
 
+
 def generate_curve(p):
     '''
     Essentially Algorithm 7.5.9
@@ -308,19 +307,6 @@ def odd_part(n):
         odd //= 2
     return odd
 
-
-def square_free_odd(n):
-    # check if the odd part is square free. No efficient algorithm is known.
-    x = 1
-    x_square = x * x
-    while x_square <= n:
-        if x_square == n:
-            return False
-        else:
-            x += 2
-            x_square = x * x
-    return True
-    
 
 def gen_QNR(p):
     '''
