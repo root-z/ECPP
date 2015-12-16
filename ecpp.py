@@ -62,7 +62,6 @@ def atkin_morain(n):
     except (ZeroDivisionError, ValueError):
         return False
 
-
     if V != 0:
         return False
     else:

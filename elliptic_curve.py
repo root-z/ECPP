@@ -89,11 +89,11 @@ class EllipticCurve(object):
             P = self.sub(0, P)
             k = -k
 
-        l = arith1.expand(k, 2)
+        binary_expansion = [int(c) for c in bin(k)[2:]]
         Q = 0
-        for j in range(len(l) -1, -1, -1):
+        for j in range(0, len(binary_expansion)):
             Q = self.add(Q, Q)
-            if l[j] == 1:
+            if binary_expansion[j] == 1:
                 Q = self.add(Q, P)
         return Q
 
@@ -116,5 +116,21 @@ def mod_point(P, n):
     return P[0] % n, P[1] % n
 
 if __name__=='__main__':
+
     ec = EllipticCurve(3, 8, 13)
     print ec.add((9, 7), (1, 8))
+
+
+    f1 = lambda n: arith1.expand(n, 2)
+    n = 10
+    f2 = lambda n: [int(c) for c in bin(n)[2:]]
+
+    x = random.randrange(10**7)
+    x1 = f1(x)
+    x2 = f2(x)
+    for j in range(len(x1) -1, -1, -1):
+        print x1[j],
+    print "\n"
+    for j in range(0, len(x2)):
+        print x2[j],
+
