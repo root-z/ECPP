@@ -13,9 +13,7 @@ from nzmath import prime
 import mpmath
 from elliptic_curve import EllipticCurve
 import nzmath.ecpp
-from nzmath.ecpp import Elliptic
 
-from nzmath import intresidue
 
 
 small_primes = factor.mpqs.eratosthenes(10**6)  # for small_primes
@@ -354,8 +352,8 @@ if __name__=='__main__':
     print ec2.mul(15480882, (intresidue.IntegerResidueClass(168979, n), intresidue.IntegerResidueClass(14386173,n)))
    '''
     n = 838041647
-    print nzmath.ecpp.ecpp(n)
     print atkin_morain(n)
+    print nzmath.ecpp.ecpp(n)
 
 
     # print hilbert(-59)
