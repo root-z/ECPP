@@ -66,10 +66,15 @@ def atkin_morain(n):
         return False
     else:
         if q > 10**6:
-            return atkin_morain(q)
+            cert = atkin_morain(q)
+            if cert:
+                cert.insert(0, (q, m, a, b))
+            return cert
         else:
-            return prime.trialDivision(q)
-
+            if prime.trialDivision(q):
+                return [q]
+            else:
+                return False
 
 def choose_point(ec):
     """
@@ -312,14 +317,15 @@ def gen_QNR(p):
     generating quardratic residue
     p -- prime
     '''
-    #generate random number g
+    # generate random number g
     g = random.randrange(2, p)
-    #1. g has to be quadratic nonresidue
-    #2. repeat if p = 1 (mod 3) and g^((p-1)/3) = 1 (mod p)
-    while(jacobi(g, p) != -1 or (p % 3 == 1 and pow(g, (p-1)/3, p) == 1)):
+    # 1. g has to be quadratic nonresidue
+    # 2. repeat if p = 1 (mod 3) and g^((p-1)/3) = 1 (mod p)
+    while jacobi(g, p) != -1 or (p % 3 == 1 and pow(g, (p-1)/3, p) == 1):
         g = random.randrange(2, p)
     return g
-    
+
+
 if __name__=='__main__':
     # print(gen_QNR(17))
 
@@ -336,9 +342,8 @@ if __name__=='__main__':
     ec2 = Elliptic((11851425, 7584917), 15485867)
     print ec2.mul(15480882, (intresidue.IntegerResidueClass(168979, n), intresidue.IntegerResidueClass(14386173,n)))
    '''
-    n = 838041647
-    print atkin_morain(n)
+    n =  70368760954879
     print nzmath.ecpp.ecpp(n)
 
+    print atkin_morain(n)
 
-    # print hilbert(-59)
