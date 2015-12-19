@@ -1,10 +1,8 @@
 '''
 Compute Hilbert Class Polynomials
 '''
-#from mpmath import floor, sqrt, power, pi, mpf, mpc, exp, fabs
 from mpmath import *
 import mpmath
-import nzmath.quad as quad
 import ecpp
 
 round = lambda x: mpmath.floor(x + 0.5)
