@@ -7,9 +7,9 @@ from jacobi import jacobi
 from cornacchia_smith import cornacchia_smith
 from hilbert import hilbert
 from nzmath import equation
-from nzmath.arith1 import inverse, modsqrt, issquare
+from nzmath.arith1 import inverse, modsqrt, issquare, floorpowerroot
 from nzmath import factor
-from nzmath import prime
+from nzmath import prime, bigrange
 import mpmath
 from elliptic_curve import EllipticCurve
 import nzmath.ecpp
@@ -25,8 +25,8 @@ def atkin_morain(n):
     Possibly generate a limited list of discriminants.
     '''
     d = 0
-    m_found = None
-    while m_found is None:
+    m_found = False
+    while m_found is False:
         try:
             d, ms = choose_discriminant(n, d)
         except ValueError:
@@ -35,21 +35,28 @@ def atkin_morain(n):
             factors = factor_orders(m, n)
             if factors is not None:
                 k, q = factors
-                m_found = m
-                break
+
+                params = curve_parameters(d, n)
+                try:
+                    # Test to see if the order of the curve is really m
+                    a, b = params.pop()
+                    ec = EllipticCurve(a, b, n)
+                    while not test_order(ec, m):
+                        a, b = params.pop()
+                        ec = EllipticCurve(a, b, n)
+                    #print n, a, b
+
+                    m_found = True
+                    break
+                except IndexError:
+                    pass
+
         # if no proper m can be found. Go back to choose_discriminant()
     '''
     If this step fails need to return false.
     '''
-    params = curve_parameters(d, n)
 
-    # Test to see if the order of the curve is really m
-    a, b = params.pop()
-    ec = EllipticCurve(a, b, n)
 
-    while not test_order(ec, m_found):
-        a, b = params.pop()
-        ec = EllipticCurve(a, b, n)
 
     try:
     # operate on point
@@ -132,7 +139,7 @@ def factor_orders(m, n):
     """
     k = 1
     q = m
-    bound = (mpmath.power(n, 1/4.0) + 1) ** 2
+    bound = (floorpowerroot(n, 4) + 1) ** 2
     for p in small_primes:
         '''
         Check again.
@@ -178,6 +185,8 @@ def choose_discriminant(n, start=0):
         if n % d == 0:
             raise ValueError("n is not prime.")
         d = gen_discriminant(d)
+        if d > 10**7:
+            raise ValueError("Discriminant cannot be found under bound 10^7.")
         uv = cornacchia_smith(n, d)
         jac = jacobi(d, n)
         if jac == 0:
@@ -204,7 +213,9 @@ def curve_parameters(d, p):
     Returns:
         a list of (a, b) parameters for
     '''
-    g = gen_QNR(p)
+    g = gen_QNR(p, d)
+    #g = nzmath.ecpp.quasi_primitive(p, d==-3)
+
     u, v = cornacchia_smith(p, d)
     # go without the check for result of cornacchia because it's done by previous methods.
     if jacobi(d, p) != 1:
@@ -216,14 +227,14 @@ def curve_parameters(d, p):
     answer = []
 
     if d == -3:
-        x = -1
+        x = -1 % p
         for i in range(0, 6):
             answer.append((0, x))
             x = (x * g) % p
         return answer
 
     if d == -4:
-        x = -1
+        x = -1 % p
         for i in range(0, 4):
             answer.append((x, 0))
             x = (x * g) % p
@@ -232,7 +243,6 @@ def curve_parameters(d, p):
     # otherwise compute the hilbert polynomial
     _, t, _ = hilbert(d)
     s = [int(i % p) for i in t]
-    s.append(0)
     j = equation.root_Fp(s, p) # Find a root for s in Fp. Algorithm 2.3.10
     c = j * inverse(j - 1728, p) % p
     r = -3 * c % p
@@ -241,7 +251,7 @@ def curve_parameters(d, p):
     return [(r, s), (r * g * g % p, s * (g**3) % p)]
 
 
-def generate_curve(p):
+def generate_curve(p, d):
     '''
     Essentially Algorithm 7.5.9
     Args:
@@ -251,7 +261,7 @@ def generate_curve(p):
         parameters a, b for the curve
     '''
     # calculate quadratic nonresidue
-    g = gen_QNR(p)
+    g = gen_QNR(p, d)
     # find discriminant
     new_d = gen_discriminant(0)
     uv = cornacchia_smith(p, new_d)
@@ -318,7 +328,7 @@ def odd_part(n):
     return odd
 
 
-def gen_QNR(p):
+def gen_QNR(p, d):
     '''
     generating quardratic residue
     p -- prime
@@ -327,9 +337,26 @@ def gen_QNR(p):
     g = random.randrange(2, p)
     # 1. g has to be quadratic nonresidue
     # 2. repeat if p = 1 (mod 3) and g^((p-1)/3) = 1 (mod p)
-    while jacobi(g, p) != -1 or (p % 3 == 1 and pow(g, (p-1)/3, p) == 1):
+    '''
+    while jacobi(g, p) != -1 \
+            or (p % 3 == 1 and pow(g, (p-1)/3, p) == 1):
         g = random.randrange(2, p)
     return g
+    '''
+
+    #while True:
+     #   g = random.randrange(2, p)
+    for g in bigrange.range(2, p):
+        if jacobi(g, p) != -1:
+            continue
+        if p%3 != 1:
+            return g
+        cube = pow(g, (p-1)/3, p)
+        if cube != 1:
+            if d==-3 and pow(cube, 3, p) != 1:
+                continue
+            return g
+
 
 
 if __name__=='__main__':

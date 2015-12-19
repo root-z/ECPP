@@ -87,6 +87,7 @@ class EllipticCurve(object):
         """
         if k < 0:
             P = self.sub(0, P)
+            print k
             k = -k
 
         binary_expansion = [int(c) for c in bin(k)[2:]]
