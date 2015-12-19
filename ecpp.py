@@ -171,11 +171,17 @@ def choose_discriminant(n, start=0):
     '''
     d = gen_discriminant(start)
     uv = cornacchia_smith(n, d)
-    while jacobi(d, n) != 1 or uv is None:
+    jac = jacobi(d, n)
+    if jac == 0:
+        raise ValueError("n is not prime.")
+    while jac != 1 or uv is None:
         if n % d == 0:
             raise ValueError("n is not prime.")
         d = gen_discriminant(d)
         uv = cornacchia_smith(n, d)
+        jac = jacobi(d, n)
+        if jac == 0:
+            raise ValueError("n is not prime.")
     u, v = uv
 
     default = [n+1+u, n+1-u]

@@ -133,7 +133,7 @@ def dedekind(tau, precision):
         absolute = fabs(tau)
         if absolute > 1 - 0.1**5:
             break
-        ro = mpmath.sqrt(mpmath.power(tau, -1)*1j)
+        ro = sqrt(power(tau, -1)*1j)
         # ro = sqrt((tau^-1)*i)
         if ro.real < 0:
             ro = -ro
