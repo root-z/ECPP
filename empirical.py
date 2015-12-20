@@ -211,9 +211,12 @@ def empirical2():
         random_test(200)
 
 
-if __name__ == '__main__':
-    empirical2()
+def large():
+    n = 10**499 + 174295123052 + 1
+    print atkin_morain(n)
 
+if __name__ == '__main__':
+    large()
 
 def experiment():
     for i in range(10):

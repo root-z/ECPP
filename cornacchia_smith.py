@@ -2,9 +2,8 @@
 The modified Connacchia-Smith Algorithm. Implemented through Algorithm 2.3.13.
 '''
 from jacobi import jacobi
-import math
 from nzmath.arith1 import modsqrt, floorsqrt, issquare
-from nzmath.ecpp import cornacchiamodify
+import mpmath
 
 def cornacchia_smith(p, d):
     '''
@@ -48,7 +47,7 @@ def cornacchia_smith(p, d):
         return None
     if not issquare(t/(-d)):
         return None
-    return b, int(math.sqrt(t / -d))
+    return b, int(mpmath.sqrt(t / -d))
     
 
 def sqrt(x):
