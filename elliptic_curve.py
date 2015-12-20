@@ -1,3 +1,6 @@
+"""
+Used for empirical study of the program.
+"""
 from nzmath.arith1 import modsqrt, inverse
 from nzmath import arith1
 import random

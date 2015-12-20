@@ -16,14 +16,24 @@ import nzmath.ecpp
 
 
 small_primes = factor.mpqs.eratosthenes(10**6)  # for small_primes
+arbitrary_bound = 10**6
 
 
 def atkin_morain(n):
-    # d, ms = choose_discriminant(n)
-    '''
-    choose_discriminant needs to stop at some point.
-    Possibly generate a limited list of discriminants.
-    '''
+    """
+    Atkin-Morain ECPP Algorithm.
+    Args:
+        n: Probable Prime
+
+    Returns:
+        Certificate of primality, or False.
+    """
+    if n < arbitrary_bound:
+        if prime.trialDivision(n):
+            return [n]
+        else:
+            return False
+
     d = 0
     m_found = False
     while m_found is False:
@@ -72,7 +82,7 @@ def atkin_morain(n):
     if V != 0:
         return False
     else:
-        if q > 10**6:
+        if q > arbitrary_bound:
             cert = atkin_morain(q)
             if cert:
                 cert.insert(0, (q, m, a, b))
