@@ -185,7 +185,7 @@ def choose_discriminant(n, start=0):
         if n % d == 0:
             raise ValueError("n is not prime.")
         d = gen_discriminant(d)
-        if d > 10**7:
+        if d < -10**6:
             raise ValueError("Discriminant cannot be found under bound 10^7.")
         uv = cornacchia_smith(n, d)
         jac = jacobi(d, n)
@@ -375,7 +375,7 @@ if __name__=='__main__':
     ec2 = Elliptic((11851425, 7584917), 15485867)
     print ec2.mul(15480882, (intresidue.IntegerResidueClass(168979, n), intresidue.IntegerResidueClass(14386173,n)))
    '''
-    n =  70368760954879
+    n = 70368760954879
     print nzmath.ecpp.ecpp(n)
 
     print atkin_morain(n)
