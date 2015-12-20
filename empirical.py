@@ -5,6 +5,7 @@ from miller_rabin import miller_rabin
 import random
 from hilbert import hilbert
 import timeit
+from nzmath import bigrandom
 
 #slow_ns = {1606475880020429434205823188497, 55145088737, 39868093098543668111, 37163749179039507745104284885522719649083886797921}
 #prime = {1469264127174608819435920883418908401395902714016645228065953110536417686537910184628210934850283699}
@@ -167,55 +168,30 @@ prime_250 = [
 ]
 
 
-def random_test():
-    n = random.randrange(2**(32 * 5), 2**(33* 5))
+def random_nbit(n):
+    return bigrandom.randrange(2**(n-1), 2**n)
+
+
+def random_test(bits):
+    n = random_nbit(bits)
     if n % 2 == 0:
         n += 1
     #n = 35201546659608842026088328007565866231962578784643756647773109869245232364730066609837018108561065242031153677
-
     basic_test(n)
 
+
 def basic_test(n):
-    print n
-    print miller_rabin(n, 10)
+    print n,
+    start = timeit.default_timer()
+    miller_rabin(n, 10)
+    print timeit.default_timer() - start,
     #print ecpp(n)
-
-    print atkin_morain(n)
-
-
-def small_test():
-    #n = 35201546659608842026088328007565866231962578784643756647773109869245232364730066609837018108561065242031153677
-    #params = [(-1, 0), (3148238074213049298184748360408504597457285255129492277522418308837485344060992374194032681202994031158685855L, 0), (30682785040784393099045533114519098349746849420602907222549615663800699679935926949389094585330957766039933492L, 0), (25596998038600007939559970541996623929140436236303621717729267303263133182683870416112814838865222105745577733L, 0)]
-    n=17600773329804421013044164003782933115981289392321878318274335494333497909423750776833564592938824735089487193
-    params = curve_parameters(-3, n)
-    params2 = []
-
-    print params
-    print params2
-    print len(params)
-    print len(params2)
-
-bad = [26477188104986488097172416521555477825456957453367, 22135856033373560273188148551158745328195182450849]
+    start = timeit.default_timer()
+    atkin_morain(n)
+    print timeit.default_timer() - start
 
 
-if __name__ == '__main__':
-    '''
-    data = {prime_10: 10,
-            prime_20: 20,
-            prime_30: 30,
-            prime_40: 40,
-            prime_50: 50,
-            prime_60: 60,
-            prime_70: 70,
-            prime_80: 80,
-            prime_90: 90,
-            prime_100: 100,
-            prime_110: 110,
-            prime_120: 120,
-            prime_150: 150,
-            prime_200: 200,
-            prime_250: 250}
-    '''
+def empirical1():
     f = open('data', 'w')
     datas = [prime_10, prime_20, prime_30, prime_40, prime_50, prime_60, prime_70, prime_80, prime_90,
              prime_100, prime_110, prime_120, prime_150, prime_200, prime_250]
@@ -229,9 +205,19 @@ if __name__ == '__main__':
             f.write(str(n) + ' ' + str(duration) + ' ' + str(len(r1)) + ' ' + str(r1))
     f.close()
 
-def main():
-    for i in range(20):
-        random_test()
+
+def empirical2():
+    for i in range(10):
+        random_test(200)
+
+
+if __name__ == '__main__':
+    empirical2()
+
+
+def experiment():
+    for i in range(10):
+        random_test(300)
     print 'done!'
 
     print hilbert(-88)
@@ -242,23 +228,3 @@ def main():
         start = timeit.default_timer()
         r1 = atkin_morain(n)
         print timeit.default_timer() - start, '\n', r1
-        '''
-        start = timeit.default_timer()
-        r2 = ecpp(n)
-        print timeit.default_timer() - start
-        print (r1!=False)==r2
-        '''
-
-    '''
-    params = curve_parameters(-88, n)
-    params2 =[]
-    for param in param_gen(-88, n, quasi_primitive(n, False)):
-        params2.append(param)
-    print params
-    print params2
-    '''
-    #[(0, 17600773329804421013044164003782933115981289392321878318274335494333497909423750776833564592938824735089487192L), (0, 17600773329804421013044164003782933115981289392321878318274335494333497909423750776833564592938824735089487188L), (0, 17600773329804421013044164003782933115981289392321878318274335494333497909423750776833564592938824735089487168L), (0, 17600773329804421013044164003782933115981289392321878318274335494333497909423750776833564592938824735089487068L), (0, 17600773329804421013044164003782933115981289392321878318274335494333497909423750776833564592938824735089486568L), (0, 17600773329804421013044164003782933115981289392321878318274335494333497909423750776833564592938824735089484068L)]
-    #random_test()
-
-
-    #(299122626537117421532123440069947258922203137143220160725728553363183559114474543939921013312192743788945565L, 17401358245446342732022748377069634943366487300893064877790516458758042203347434414206950584064029572563523483L)
