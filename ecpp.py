@@ -10,10 +10,7 @@ from nzmath import equation
 from nzmath.arith1 import inverse, modsqrt, issquare, floorpowerroot
 from nzmath import factor
 from nzmath import prime, bigrange
-import mpmath
 from elliptic_curve import EllipticCurve
-import nzmath.ecpp
-
 
 small_primes = factor.mpqs.eratosthenes(10**6)  # for small_primes
 arbitrary_bound = 10**6
@@ -368,25 +365,8 @@ def gen_QNR(p, d):
             return g
 
 
-
 if __name__=='__main__':
-    # print(gen_QNR(17))
-
-    # primes = factor.mpqs.eratosthenes(10 ** 6)
-    # print primes[0:100]
-    '''
-    for param in nzmath.ecpp._generate_params_for_general_disc(-59, 15485867, gen_QNR(15485867)):
-        print param
-    P = (6035688, 1172853)
-    n = 15485867
-    ec = EllipticCurve(11851425, 7584917, 15485867)
-    print ec.mul(15480882, (168979, 14386173))
-
-    ec2 = Elliptic((11851425, 7584917), 15485867)
-    print ec2.mul(15480882, (intresidue.IntegerResidueClass(168979, n), intresidue.IntegerResidueClass(14386173,n)))
-   '''
     n = 70368760954879
-    print nzmath.ecpp.ecpp(n)
 
     print atkin_morain(n)
 
