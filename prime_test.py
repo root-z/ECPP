@@ -9,7 +9,7 @@ import sys
 
 def prime(n):
     """
-
+    Final Product: Run Miller-Rabin first, use ECPP only when its probable prime.
     Args:
         n: Number to be tested
 
@@ -19,7 +19,7 @@ def prime(n):
     if not n > 0:
         raise ValueError("input must be greater than 0")
     repeat = 50
-    if miller_rabin(n, 50):
+    if miller_rabin(n, repeat):
         cert = atkin_morain(n)
         if not cert:
             raise InconsistencyError("ECPP")

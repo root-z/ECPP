@@ -7,7 +7,7 @@ import mpmath
 
 def cornacchia_smith(p, d):
     '''
-
+    modified Cornacchia's Algorithm to solve a^2 + b^2 |D| = 4p for a and b
     Args:
         p:
         d:
@@ -51,7 +51,7 @@ def cornacchia_smith(p, d):
     
 
 def sqrt(x):
-    '''trial method for calculating square root. Good enough for purpose'''
+    """trial method for calculating square root. """
     i = 1
     while (i * i < x):
         i += 1
@@ -76,7 +76,6 @@ def modSqrt(a, p):
         d = random.randrange(2, p)
         while (jacobi(d, p) != -1):
             d = random.randrange(2, p)
-unfinished
 '''
 
 

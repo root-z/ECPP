@@ -1,14 +1,13 @@
+"""
+Empirical study and testing
+"""
+
 from ecpp import atkin_morain
-from nzmath.ecpp import ecpp, param_gen, quasi_primitive
-from ecpp import curve_parameters
 from miller_rabin import miller_rabin
-import random
 from hilbert import hilbert
 import timeit
 from nzmath import bigrandom
-
-#slow_ns = {1606475880020429434205823188497, 55145088737, 39868093098543668111, 37163749179039507745104284885522719649083886797921}
-#prime = {1469264127174608819435920883418908401395902714016645228065953110536417686537910184628210934850283699}
+from prime_test import prime
 
 #https://primes.utm.edu/lists/small/
 
@@ -187,7 +186,7 @@ def basic_test(n):
     print timeit.default_timer() - start,
     #print ecpp(n)
     start = timeit.default_timer()
-    atkin_morain(n)
+    prime(n)
     print timeit.default_timer() - start
 
 
@@ -216,7 +215,8 @@ def large():
     print atkin_morain(n)
 
 if __name__ == '__main__':
-    large()
+    empirical2()
+
 
 def experiment():
     for i in range(10):

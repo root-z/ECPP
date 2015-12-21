@@ -1,7 +1,19 @@
+"""
+Implementation of Miller-Rabin test.
+"""
 import random
 
 
 def miller_rabin(n, k):
+    """
+    Main method
+    Args:
+        n:
+        k: number of loops (randomly choosing witnesses)
+
+    Returns:
+
+    """
     for i in range(0, k):
         a = random.randrange(2, n-1)
         if not miller_rabin_once(n, a):
@@ -10,6 +22,15 @@ def miller_rabin(n, k):
 
 
 def miller_rabin_once(n, a):
+    """
+    Single Witness loop.
+    Args:
+        n:
+        a:
+
+    Returns:
+
+    """
     if n % 2 == 0 or 1 < gcd(a, n)[0] < n:
         return False
     q, k = twokq(n-1)
