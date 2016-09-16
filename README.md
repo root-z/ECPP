@@ -12,6 +12,7 @@ Note this process is for Linux/OSX. For windows virtualenv requires slight diffe
 If Windows machine is used please go to the website of these libraries and install as suggested. The script has been tested on Windows.
 
 After installation of the program, there are two ways to run the program.
+
 1. In Bash/Terminal/..., Enter
     python prime_test.py (prime_number)
 
