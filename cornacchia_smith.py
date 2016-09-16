@@ -80,4 +80,4 @@ def modSqrt(a, p):
 
 
 if __name__ == '__main__':
-    print cornacchia_smith(7, -3)
+    print (cornacchia_smith(7, -3))

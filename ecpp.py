@@ -368,5 +368,5 @@ def gen_QNR(p, d):
 if __name__=='__main__':
     n = 70368760954879
 
-    print atkin_morain(n)
+    print (atkin_morain(n))
 
