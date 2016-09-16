@@ -1,5 +1,5 @@
 from flask import Flask, jsonify
-from ecpp import atkin_morain
+from prime_test import prime
 
 app = Flask(__name__)
 
@@ -9,7 +9,7 @@ def hello():
 
 @app.route('/<int:num>', methods=['GET'])
 def is_prime(num):
-    return jsonify(atkin_morain(num))
+    return jsonify(prime(num))
 
 if __name__ == '__main__':
     app.run()

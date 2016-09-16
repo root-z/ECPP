@@ -24,3 +24,5 @@ After installation of the program, there are two ways to run the program.
 2. In Interactive Python or scripts
     from prime_test import prime
     prime(prime_number)
+
+In the latest version I have also added a Flask web service for running the prime tester. See ecpp_service.py.
